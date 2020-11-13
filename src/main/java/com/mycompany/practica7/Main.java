@@ -1,8 +1,11 @@
 package com.mycompany.practica7;
 
+import java.awt.Dimension;
+import java.awt.Point;
 import java.awt.event.AdjustmentEvent;
 import java.awt.event.AdjustmentListener;
 import java.io.File;
+import java.util.Arrays;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollBar;
@@ -27,19 +30,75 @@ public class Main extends javax.swing.JFrame {
     JScrollBar barraV;
     JScrollBar barraH;
     
+    EstadisticasImagen ei = new EstadisticasImagen();
+    
+    Point esq;
+    Dimension dim;
+    
+    int[] max, min, med;
+    int maxRed, minRed, medRed, maxGreen, minGreen, medGreen, maxBlue, minBlue, medBlue;
+    
     class MyListener implements AdjustmentListener {
 
         @Override
         public void adjustmentValueChanged(AdjustmentEvent e) {
+            
+            esq = jScrollPane.getViewport().getViewPosition();
+            dim = jScrollPane.getViewport().getExtentSize();
+            
             System.out.println("barra desplazada");
             System.out.println("Posición: " + jScrollPane.getViewport().getViewPosition().toString());
             System.out.println("Tamaño: " + jScrollPane.getViewport().getExtentSize().toString());
+            
+            if (img != null) {
+            ei.calculaEstadisticas(img, esq, dim);
+            
+            max = ei.getMaximo();
+            min = ei.getMinimo();
+            med = ei.getPromedio();
+            
+            maxRed = max[0];
+            minRed = min[0];
+            medRed = med[0];
+            maxGreen = max[1];
+            minGreen = min[1];
+            medGreen = med[1];
+            maxBlue = max[2];
+            minBlue = min[2];
+            medBlue = med[2];
+            
+            jLabelRedMax.setText(Integer.toString(maxRed));
+            jLabelRedMax.setVisible(true);
+            jLabelRedMin.setText(Integer.toString(minRed));
+            jLabelRedMin.setVisible(true);
+            jLabelRedMed.setText(Integer.toString(medRed));
+            jLabelRedMed.setVisible(true);
+            
+            jLabelGreenMax.setText(Integer.toString(maxGreen));
+            jLabelGreenMax.setVisible(true);
+            jLabelGreenMin.setText(Integer.toString(minGreen));
+            jLabelGreenMin.setVisible(true);
+            jLabelGreenMed.setText(Integer.toString(medGreen));
+            jLabelGreenMed.setVisible(true);
+            
+            jLabelBlueMax.setText(Integer.toString(maxBlue));
+            jLabelBlueMax.setVisible(true);
+            jLabelBlueMin.setText(Integer.toString(minBlue));
+            jLabelBlueMin.setVisible(true);
+            jLabelBlueMed.setText(Integer.toString(medBlue));
+            jLabelBlueMed.setVisible(true);
+        }
         }
         
     }
     
     public Main() {
         initComponents();
+        
+        nu.pattern.OpenCV.loadShared();
+        System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
+        
+        this.setLocationRelativeTo(null);
         
         barraV = jScrollPane.getVerticalScrollBar();
         barraH = jScrollPane.getHorizontalScrollBar();
@@ -49,11 +108,7 @@ public class Main extends javax.swing.JFrame {
         
         barraV.addAdjustmentListener(new MyListener());
         barraH.addAdjustmentListener(new MyListener());
-        
-        nu.pattern.OpenCV.loadShared();
-        System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
-        
-        this.setLocationRelativeTo(null);
+               
     }
 
     /**
@@ -67,6 +122,22 @@ public class Main extends javax.swing.JFrame {
 
         jScrollPane = new javax.swing.JScrollPane();
         lienzo1 = new com.mycompany.practica7.Lienzo();
+        jPanelColors = new javax.swing.JPanel();
+        jLabelRed = new javax.swing.JLabel();
+        jLabelRedMax = new javax.swing.JLabel();
+        jLabelRedMin = new javax.swing.JLabel();
+        jLabelRedMed = new javax.swing.JLabel();
+        jLabelGreen = new javax.swing.JLabel();
+        jLabelGreenMax = new javax.swing.JLabel();
+        jLabelGreenMin = new javax.swing.JLabel();
+        jLabelGreenMed = new javax.swing.JLabel();
+        jLabelBlue = new javax.swing.JLabel();
+        jLabelBlueMax = new javax.swing.JLabel();
+        jLabelBlueMin = new javax.swing.JLabel();
+        jLabelBlueMed = new javax.swing.JLabel();
+        jLabelMax = new javax.swing.JLabel();
+        jLabelMin = new javax.swing.JLabel();
+        jLabelMed = new javax.swing.JLabel();
         jMenuBar = new javax.swing.JMenuBar();
         jMenuFiles = new javax.swing.JMenu();
         jMenuItemOpen = new javax.swing.JMenuItem();
@@ -75,6 +146,9 @@ public class Main extends javax.swing.JFrame {
         jMenuItemExit = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setMinimumSize(new java.awt.Dimension(200, 150));
+
+        lienzo1.setMaximumSize(new java.awt.Dimension(1024, 768));
 
         javax.swing.GroupLayout lienzo1Layout = new javax.swing.GroupLayout(lienzo1);
         lienzo1.setLayout(lienzo1Layout);
@@ -88,6 +162,63 @@ public class Main extends javax.swing.JFrame {
         );
 
         jScrollPane.setViewportView(lienzo1);
+
+        jPanelColors.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "FRAME COLORS", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 1, 14), new java.awt.Color(255, 255, 255))); // NOI18N
+        jPanelColors.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        jLabelRed.setFont(new java.awt.Font("Tahoma", 1, 10)); // NOI18N
+        jLabelRed.setForeground(new java.awt.Color(255, 0, 0));
+        jLabelRed.setText("RED");
+        jPanelColors.add(jLabelRed, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 20, -1, -1));
+
+        jLabelRedMax.setForeground(new java.awt.Color(255, 0, 0));
+        jPanelColors.add(jLabelRedMax, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 40, -1, -1));
+
+        jLabelRedMin.setForeground(new java.awt.Color(255, 0, 0));
+        jPanelColors.add(jLabelRedMin, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 60, -1, -1));
+
+        jLabelRedMed.setForeground(new java.awt.Color(255, 0, 0));
+        jPanelColors.add(jLabelRedMed, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 80, -1, -1));
+
+        jLabelGreen.setFont(new java.awt.Font("Tahoma", 1, 10)); // NOI18N
+        jLabelGreen.setForeground(new java.awt.Color(0, 255, 0));
+        jLabelGreen.setText("GREEN");
+        jPanelColors.add(jLabelGreen, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 20, -1, -1));
+
+        jLabelGreenMax.setForeground(new java.awt.Color(0, 255, 0));
+        jPanelColors.add(jLabelGreenMax, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 40, -1, -1));
+
+        jLabelGreenMin.setForeground(new java.awt.Color(0, 255, 0));
+        jPanelColors.add(jLabelGreenMin, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 60, -1, -1));
+
+        jLabelGreenMed.setForeground(new java.awt.Color(0, 255, 0));
+        jPanelColors.add(jLabelGreenMed, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 80, -1, -1));
+
+        jLabelBlue.setFont(new java.awt.Font("Tahoma", 1, 10)); // NOI18N
+        jLabelBlue.setForeground(new java.awt.Color(0, 0, 255));
+        jLabelBlue.setText("BLUE");
+        jPanelColors.add(jLabelBlue, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 20, -1, -1));
+
+        jLabelBlueMax.setForeground(new java.awt.Color(0, 0, 255));
+        jPanelColors.add(jLabelBlueMax, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 40, -1, -1));
+
+        jLabelBlueMin.setForeground(new java.awt.Color(0, 0, 255));
+        jPanelColors.add(jLabelBlueMin, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 60, -1, -1));
+
+        jLabelBlueMed.setForeground(new java.awt.Color(0, 0, 255));
+        jPanelColors.add(jLabelBlueMed, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 80, -1, -1));
+
+        jLabelMax.setFont(new java.awt.Font("Tahoma", 1, 10)); // NOI18N
+        jLabelMax.setText("MAX");
+        jPanelColors.add(jLabelMax, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 40, -1, -1));
+
+        jLabelMin.setFont(new java.awt.Font("Tahoma", 1, 10)); // NOI18N
+        jLabelMin.setText("MIN");
+        jPanelColors.add(jLabelMin, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 60, -1, -1));
+
+        jLabelMed.setFont(new java.awt.Font("Tahoma", 1, 10)); // NOI18N
+        jLabelMed.setText("MEDIA");
+        jPanelColors.add(jLabelMed, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 80, -1, -1));
 
         jMenuFiles.setMnemonic('F');
         jMenuFiles.setText("Files");
@@ -129,10 +260,14 @@ public class Main extends javax.swing.JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jScrollPane)
+            .addComponent(jPanelColors, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addComponent(jPanelColors, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 164, Short.MAX_VALUE))
         );
 
         pack();
@@ -215,11 +350,27 @@ public class Main extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel jLabelBlue;
+    private javax.swing.JLabel jLabelBlueMax;
+    private javax.swing.JLabel jLabelBlueMed;
+    private javax.swing.JLabel jLabelBlueMin;
+    private javax.swing.JLabel jLabelGreen;
+    private javax.swing.JLabel jLabelGreenMax;
+    private javax.swing.JLabel jLabelGreenMed;
+    private javax.swing.JLabel jLabelGreenMin;
+    private javax.swing.JLabel jLabelMax;
+    private javax.swing.JLabel jLabelMed;
+    private javax.swing.JLabel jLabelMin;
+    private javax.swing.JLabel jLabelRed;
+    private javax.swing.JLabel jLabelRedMax;
+    private javax.swing.JLabel jLabelRedMed;
+    private javax.swing.JLabel jLabelRedMin;
     private javax.swing.JMenuBar jMenuBar;
     private javax.swing.JMenu jMenuFiles;
     private javax.swing.JMenuItem jMenuItemClose;
     private javax.swing.JMenuItem jMenuItemExit;
     private javax.swing.JMenuItem jMenuItemOpen;
+    private javax.swing.JPanel jPanelColors;
     private javax.swing.JScrollPane jScrollPane;
     private javax.swing.JPopupMenu.Separator jSeparatorFiles;
     private com.mycompany.practica7.Lienzo lienzo1;

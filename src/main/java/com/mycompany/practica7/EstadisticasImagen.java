@@ -13,7 +13,7 @@ import org.opencv.core.Scalar;
 
 /**
  *
- * @author Ayoze
+ * @author Ayoze, Nicolás
  */
 
 public class EstadisticasImagen {
